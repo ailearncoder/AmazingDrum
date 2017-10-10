@@ -10,34 +10,51 @@
     tools:showIn="@layout/app_bar_main">
 
     <LinearLayout
-        android:layout_width="344dp"
-        android:layout_height="495dp"
-        android:gravity="center" android:orientation="vertical" tools:layout_editor_absoluteX="8dp" tools:layout_editor_absoluteY="8dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/drum1"
                 android:layout_width="150dp"
-                android:layout_height="150dp" android:text="小擦"/>
+                android:layout_height="150dp"
+                android:text="小擦" />
+
             <Button
                 android:id="@+id/drum2"
                 android:layout_width="150dp"
-                android:layout_height="150dp" android:text="大擦"/>
+                android:layout_height="150dp"
+                android:text="大擦" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/drum3"
                 android:layout_width="150dp"
-                android:layout_height="150dp" android:text="底鼓"/>
+                android:layout_height="150dp"
+                android:text="底鼓" />
+
             <Button
                 android:id="@+id/drum4"
                 android:layout_width="150dp"
-                android:layout_height="150dp" android:text="军鼓"/>
+                android:layout_height="150dp"
+                android:text="军鼓" />
         </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
