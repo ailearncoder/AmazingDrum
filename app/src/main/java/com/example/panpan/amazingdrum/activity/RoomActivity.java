@@ -45,7 +45,7 @@ public class RoomActivity extends Activity {
     private void initView() {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         listMembers.setAdapter(adapter);
-        textInfo.setText("How to enter room?\nPlease input:" + IpAdressUtils.getIp(this) + ":8888");
+        textInfo.setText("How to enter room?\nPlease input:" + IpAdressUtils.getIp(this));
     }
 
     @OnClick(R.id.button_begin)
