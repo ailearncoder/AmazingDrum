@@ -23,7 +23,7 @@ public class Sound {
                                 .setLegacyStreamType(AudioManager.STREAM_MUSIC)
                                 .build()
                 )
-                .setMaxStreams(4).build();
+                .setMaxStreams(1).build();
         soundId[0]=soundPool.load(context,R.raw.c,1);
         soundId[1]=soundPool.load(context,R.raw.d,1);
         soundId[2]=soundPool.load(context,R.raw.a,1);

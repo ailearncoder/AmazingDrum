@@ -88,9 +88,10 @@ public class ServerThread extends Thread {
 
     public boolean write(byte... data) {
         try {
-            if (outputStream != null)
+            if (outputStream != null) {
                 outputStream.write(data);
-            return true;
+                return true;
+            }
         } catch (Exception e) {
             close();
         }

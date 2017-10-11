@@ -3,6 +3,7 @@ package com.example.panpan.amazingdrum.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.panpan.amazingdrum.R;
 import com.example.panpan.amazingdrum.ServerThread;
+import com.example.panpan.amazingdrum.Sound;
+import com.example.panpan.amazingdrum.custom.MyUtil;
 import com.example.panpan.amazingdrum.util.IpAdressUtils;
 
 import java.net.ServerSocket;
@@ -32,6 +35,7 @@ public class RoomActivity extends Activity {
     private ArrayList<ServerThread> servers = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private Handler handler = new Handler();
+    private Sound sound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,10 @@ public class RoomActivity extends Activity {
         ButterKnife.inject(this);
         initView();
         startListen();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        sound=new Sound();
+        sound.init(this);
     }
 
     private void initView() {
@@ -50,6 +58,15 @@ public class RoomActivity extends Activity {
 
     @OnClick(R.id.button_begin)
     public void onViewClicked() {
+        if (servers.size() > 0) {
+            ServerThread thread;
+            for (int i = 0; i < servers.size(); i++) {
+                thread = servers.get(i);
+                thread.write((byte) 0x01, (byte) 0x01);
+            }
+        } else {
+            MyUtil.showToast(this, "等待玩家加入房间");
+        }
     }
 
     private boolean isUiRun = false;
@@ -86,8 +103,14 @@ public class RoomActivity extends Activity {
         }
 
         @Override
-        public void OnDataReceived(ServerThread server, byte[] data, int length) {
-
+        public void OnDataReceived(ServerThread server, final byte[] data, int length) {
+            sound.play(data[1]%4);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MyUtil.showToast(RoomActivity.this, "received:" + data[1]);
+                }
+            });
         }
     };
     ServerSocket serverSocket;
@@ -124,6 +147,7 @@ public class RoomActivity extends Activity {
         } catch (Exception e) {
 
         }
+        sound.release();
         super.onDestroy();
     }
 }

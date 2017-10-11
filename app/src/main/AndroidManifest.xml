@@ -32,5 +32,7 @@
         </activity>
         <activity android:name=".activity.RoomActivity" />
         <activity android:name=".activity.JoinActivity" />
+        <activity android:name=".activity.PlayActivity"></activity>
     </application>
+
 </manifest>

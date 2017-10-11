@@ -1,16 +1,14 @@
 package com.example.panpan.amazingdrum.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.panpan.amazingdrum.JoinThread;
 import com.example.panpan.amazingdrum.R;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,9 +22,7 @@ public class JoinActivity extends Activity {
     Button buttonJoin;
     @InjectView(R.id.edit_name)
     EditText editName;
-    private Socket socket;
-    private InputStream inputStream;
-    private OutputStream outputStream;
+    private JoinThread joinThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +40,13 @@ public class JoinActivity extends Activity {
         }
     }
 
-    private void join() {
-        buttonJoin.setEnabled(false);
-        buttonJoin.setText("正在加入...");
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String host = editRoom.getText().toString();
-                try {
-                    socket = new Socket(host, 8888);
-                    inputStream = socket.getInputStream();
-                    outputStream = socket.getOutputStream();
+    private JoinThread.OnJoinListener onJoinListener = new JoinThread.OnJoinListener() {
+        @Override
+        public void OnStateChanged(JoinThread thread, JoinThread.State state) {
+            switch (state) {
+                case Linked:
+                    break;
+                case Verified:
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -62,54 +54,56 @@ public class JoinActivity extends Activity {
                             buttonJoin.setText("退出");
                         }
                     });
-                    byte name[]=editName.getText().toString().getBytes("UTF-8");
-                    byte name2[]=new byte[name.length+1];
-                    System.arraycopy(name,0,name2,1,name.length);
-                    name2[0]=0;
-                    outputStream.write(name2);
-                    while (true) {
-                        inputStream.read();
-                    }
-                } catch (Exception e) {
+                    break;
+                case Dislink:
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (buttonJoin.getText().toString().contains("正在加入")) {
+                                Toast.makeText(JoinActivity.this, "加入失败", Toast.LENGTH_LONG).show();
+                            }
                             buttonJoin.setEnabled(true);
                             buttonJoin.setText("加入");
                         }
                     });
-                }
+                    break;
             }
-        });
-        thread.start();
+        }
+
+        @Override
+        public void OnDataReceived(JoinThread thread, byte[] data, int length) {
+            if (data[0] == 0x01 && data[1] == 0x01) {
+                PlayActivity.joinThread=joinThread;
+                startActivity(new Intent(JoinActivity.this, PlayActivity.class));
+                finish();
+            }
+        }
+    };
+
+    private void join() {
+        buttonJoin.setEnabled(false);
+        buttonJoin.setText("正在加入...");
+        String host = editRoom.getText().toString();
+        joinThread = new JoinThread(editName.getText().toString(), host);
+        joinThread.setListener(onJoinListener);
+        joinThread.start();
     }
 
     private void close() {
         buttonJoin.setEnabled(false);
         buttonJoin.setText("正在退出...");
-        if (inputStream != null)
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
-        if (outputStream != null)
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
-        if (socket != null)
-            try {
-                socket.close();
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
+        if (joinThread != null)
+            joinThread.close();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        close();
     }
 
     @Override
     protected void onDestroy() {
-        close();
         super.onDestroy();
     }
 }
