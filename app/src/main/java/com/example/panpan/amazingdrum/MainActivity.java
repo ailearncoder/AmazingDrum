@@ -31,7 +31,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity
             String name = device.getName();
             String addr = device.getAddress();
             int rssi = result.getRssi();
-            if ("AeroBand".equals(name)) {
+            if ("AeroBand".equals(name)&&rssi>-50) {
                 if (address.containsKey(addr)) {
                     //listData.set(address.get(addr), "name:" + name + "\naddr:" + addr + "\nrssi:" + rssi + "dBm");
                     ArrayMap<String, String> arrayMap = address.get(addr);
@@ -190,7 +189,6 @@ public class MainActivity extends AppCompatActivity
                     BleLink bleLink = new BleLink(MainActivity.this);
                     bleLink.setBleListener(MainActivity.this);
                     bleLink.id = bleId.get(0);
-                    bleLink.setAddress(addr);
                     bleId.remove(0);
                     bleLinks.put(addr, bleLink);
                     bleLink.link(mBluetoothAdapter.getRemoteDevice(addr));

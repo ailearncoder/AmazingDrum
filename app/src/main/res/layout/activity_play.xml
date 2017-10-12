@@ -6,6 +6,25 @@
     android:layout_height="match_parent"
     tools:context="com.example.panpan.amazingdrum.activity.PlayActivity">
 
+    <TextView
+        android:id="@+id/device_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="设备未连接"
+        app:layout_constraintBaseline_toBaselineOf="@+id/device_setlect_btn"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/device_setlect_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="连接设备"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <LinearLayout
         android:layout_width="368dp"
         android:layout_height="wrap_content"

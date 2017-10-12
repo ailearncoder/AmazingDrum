@@ -84,7 +84,16 @@ public class JoinActivity extends Activity {
         buttonJoin.setEnabled(false);
         buttonJoin.setText("正在加入...");
         String host = editRoom.getText().toString();
-        joinThread = new JoinThread(editName.getText().toString(), host);
+        String name=editName.getText().toString();
+        if(MainBandActivity.instrumentType==0)
+            name+="——吉他";
+        if(MainBandActivity.instrumentType==1)
+            name+="——架子鼓";
+        if(MainBandActivity.instrumentType==2)
+            name+="——电吉他";
+        if(MainBandActivity.instrumentType==3)
+            name+="——贝斯";
+        joinThread = new JoinThread(name, host);
         joinThread.setListener(onJoinListener);
         joinThread.start();
     }

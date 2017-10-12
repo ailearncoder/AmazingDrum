@@ -32,7 +32,11 @@
         </activity>
         <activity android:name=".activity.RoomActivity" />
         <activity android:name=".activity.JoinActivity" />
-        <activity android:name=".activity.PlayActivity"></activity>
+        <activity android:name=".activity.PlayActivity" />
+        <activity
+            android:name=".activity.DeviceSelectActivity"
+            android:label="选择拨片"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"></activity>
     </application>
 
 </manifest>

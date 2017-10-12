@@ -48,7 +48,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="-1dp"
         android:inputType="textPersonName"
-        android:text="森哥"
+        android:text="玩家"
         app:layout_constraintLeft_toRightOf="@+id/textView2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_room" />

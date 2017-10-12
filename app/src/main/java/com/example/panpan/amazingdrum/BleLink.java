@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 
@@ -18,14 +19,15 @@ import java.util.UUID;
 
 public class BleLink {
     public static final String SERVER_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
-    public static final String RX_UUID     = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-    public static final String TX_UUID     = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
-    public static final String DESC_UUID   = "00002902-0000-1000-8000-00805f9b34fb";
-    public int id=0;
+    public static final String RX_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
+    public static final String TX_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+    public static final String DESC_UUID = "00002902-0000-1000-8000-00805f9b34fb";
+    public int id = 0;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothGattService bleServer;
     private BluetoothGattCharacteristic txChar, rxChar;
-    private String address="";
+    private String name = "";
+    private String address = "";
     private BluetoothGattCallback bleCallBack = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -58,7 +60,10 @@ public class BleLink {
                     }
                 }
             } else {
-                OnDeviceStateChanged(DeviceState.DEVICE_STATE_LINKFAILED);
+                if (deviceState == DeviceState.DEVICE_STATE_LINKED)
+                    OnDeviceStateChanged(DeviceState.DEVICE_STATE_LINKLOST);
+                else
+                    OnDeviceStateChanged(DeviceState.DEVICE_STATE_LINKFAILED);
                 OnDeviceStateChanged(DeviceState.DEVICE_STATE_DISLINK);
             }
         }
@@ -175,8 +180,8 @@ public class BleLink {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public String getName() {
+        return name;
     }
 
     public enum DeviceState {
@@ -198,7 +203,14 @@ public class BleLink {
         this.context = context;
     }
 
+    public boolean link(String address) {
+        BluetoothDevice device = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter().getRemoteDevice(address);
+        return link(device);
+    }
+
     public boolean link(BluetoothDevice device) {
+        name = device.getName();
+        address = device.getAddress();
         mBluetoothGatt = device.connectGatt(context, false, bleCallBack);
         if (mBluetoothGatt != null) {
             OnDeviceStateChanged(DeviceState.DEVICE_STATE_LINKING);
@@ -222,7 +234,7 @@ public class BleLink {
     }
 
     public boolean sendData(byte... data) {
-        if(deviceState==DeviceState.DEVICE_STATE_LINKED) {
+        if (deviceState == DeviceState.DEVICE_STATE_LINKED) {
             rxChar.setValue(data);
             return mBluetoothGatt.writeCharacteristic(rxChar);
         }
@@ -251,8 +263,8 @@ public class BleLink {
 
         void OnDataReceived(BleLink bleLink, byte data[]);
     }
-    public DeviceState getDeviceState()
-    {
+
+    public DeviceState getDeviceState() {
         return deviceState;
     }
 }

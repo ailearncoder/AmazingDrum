@@ -46,7 +46,7 @@ public class RoomActivity extends Activity {
         startListen();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        sound=new Sound();
+        sound = new Sound();
         sound.init(this);
     }
 
@@ -74,6 +74,14 @@ public class RoomActivity extends Activity {
         @Override
         public void run() {
             adapter.clear();
+            if (MainBandActivity.instrumentType == 0)
+                adapter.add("房主——吉他");
+            if (MainBandActivity.instrumentType == 1)
+                adapter.add("房主——架子鼓");
+            if (MainBandActivity.instrumentType == 2)
+                adapter.add("房主——电吉他");
+            if (MainBandActivity.instrumentType == 3)
+                adapter.add("房主——贝斯");
             for (int i = 0; i < servers.size(); i++) {
                 adapter.add(servers.get(i).getTag());
             }
@@ -104,7 +112,7 @@ public class RoomActivity extends Activity {
 
         @Override
         public void OnDataReceived(ServerThread server, final byte[] data, int length) {
-            sound.play(data[1]%4);
+            //sound.play(data[1]%4);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
