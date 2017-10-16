@@ -1,6 +1,5 @@
 package com.example.panpan.amazingdrum.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -13,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class MainBandActivity extends Activity {
+public class MainBandActivity extends PermissionReqiureActivity {
 
     @InjectView(R.id.button1)
     Button button1;
@@ -57,10 +56,10 @@ public class MainBandActivity extends Activity {
                 instrumentType = 3;
                 break;
             case R.id.button5:
-                startActivity(new Intent(this, JoinActivity.class));
+                startActivity(new Intent(this, JoinActivityBle.class));
                 break;
             case R.id.button6:
-                startActivity(new Intent(this, RoomActivity.class));
+                startActivity(new Intent(this, RoomActivityBle.class));
                 break;
         }
     }

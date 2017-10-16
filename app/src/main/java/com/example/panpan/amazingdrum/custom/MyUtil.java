@@ -16,4 +16,12 @@ public class MyUtil {
         toast=Toast.makeText(context,msg,Toast.LENGTH_LONG);
         toast.show();
     }
+    public static void sleep(long millis)
+    {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

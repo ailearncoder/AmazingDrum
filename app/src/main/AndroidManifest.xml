@@ -31,8 +31,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.RoomActivity" />
+        <activity android:name=".activity.RoomActivityBle"/>
         <activity android:name=".activity.JoinActivity" />
+        <activity android:name=".activity.JoinActivityBle"/>
         <activity android:name=".activity.PlayActivity" />
+        <activity android:name=".activity.PlayDrumActivity"/>
+        <activity android:name=".activity.PlayDrumActivityBle"/>
+        <activity android:name=".activity.PlayGuitarActivityBle"/>
         <activity
             android:name=".activity.DeviceSelectActivity"
             android:label="选择拨片"

@@ -7,14 +7,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.panpan.amazingdrum.JoinThread;
+import com.example.panpan.amazingdrum.BleJoin;
 import com.example.panpan.amazingdrum.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class JoinActivity extends Activity {
+
+public class JoinActivityBle extends Activity {
 
     @InjectView(R.id.edit_room)
     EditText editRoom;
@@ -22,7 +23,7 @@ public class JoinActivity extends Activity {
     Button buttonJoin;
     @InjectView(R.id.edit_name)
     EditText editName;
-    private JoinThread joinThread;
+    private BleJoin bleJoin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +41,9 @@ public class JoinActivity extends Activity {
         }
     }
 
-    private JoinThread.OnJoinListener onJoinListener = new JoinThread.OnJoinListener() {
+    private BleJoin.OnJoinListener onBleJoinListener = new BleJoin.OnJoinListener() {
         @Override
-        public void OnStateChanged(JoinThread thread, JoinThread.State state) {
+        public void OnStateChanged(BleJoin thread, BleJoin.State state) {
             switch (state) {
                 case Linked:
                     break;
@@ -60,7 +61,7 @@ public class JoinActivity extends Activity {
                         @Override
                         public void run() {
                             if (buttonJoin.getText().toString().contains("正在加入")) {
-                                Toast.makeText(JoinActivity.this, "加入失败", Toast.LENGTH_LONG).show();
+                                Toast.makeText(JoinActivityBle.this, "加入失败", Toast.LENGTH_LONG).show();
                             }
                             buttonJoin.setEnabled(true);
                             buttonJoin.setText("加入");
@@ -71,11 +72,18 @@ public class JoinActivity extends Activity {
         }
 
         @Override
-        public void OnDataReceived(JoinThread thread, byte[] data, int length) {
-            if (data[0] == 0x01 && data[1] == 0x01) {
-                PlayActivity.joinThread=joinThread;
-                startActivity(new Intent(JoinActivity.this, PlayDrumActivity.class));
-                finish();
+        public void OnDataReceived(BleJoin thread, byte[] data, int length) {
+            if (data[0] == 0x01) {
+                if (MainBandActivity.instrumentType == 0x01) {
+                    PlayDrumActivityBle.bleJoin = bleJoin;
+                    startActivity(new Intent(JoinActivityBle.this, PlayDrumActivityBle.class));
+                    finish();
+                }
+                if (MainBandActivity.instrumentType == 0x00) {
+                    PlayGuitarActivityBle.bleJoin = bleJoin;
+                    startActivity(new Intent(JoinActivityBle.this, PlayGuitarActivityBle.class));
+                    finish();
+                }
             }
         }
     };
@@ -84,25 +92,25 @@ public class JoinActivity extends Activity {
         buttonJoin.setEnabled(false);
         buttonJoin.setText("正在加入...");
         String host = editRoom.getText().toString();
-        String name=editName.getText().toString();
-        if(MainBandActivity.instrumentType==0)
-            name+="——吉他";
-        if(MainBandActivity.instrumentType==1)
-            name+="——架子鼓";
-        if(MainBandActivity.instrumentType==2)
-            name+="——电吉他";
-        if(MainBandActivity.instrumentType==3)
-            name+="——贝斯";
-        joinThread = new JoinThread(name, host);
-        joinThread.setListener(onJoinListener);
-        joinThread.start();
+        String name = editName.getText().toString();
+        if (MainBandActivity.instrumentType == 0)
+            name += "——吉他";
+        if (MainBandActivity.instrumentType == 1)
+            name += "——架子鼓";
+        if (MainBandActivity.instrumentType == 2)
+            name += "——电吉他";
+        if (MainBandActivity.instrumentType == 3)
+            name += "——贝斯";
+        bleJoin = new BleJoin(this, name);
+        bleJoin.setListener(onBleJoinListener);
+        bleJoin.startScan();
     }
 
     private void close() {
         buttonJoin.setEnabled(false);
         buttonJoin.setText("正在退出...");
-        if (joinThread != null)
-            joinThread.close();
+        if (bleJoin != null)
+            bleJoin.close();
     }
 
     @Override

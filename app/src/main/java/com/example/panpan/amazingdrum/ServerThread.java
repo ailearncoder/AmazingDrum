@@ -19,6 +19,7 @@ public class ServerThread extends Thread {
 
     public ServerThread(Socket socket) {
         this.socket = socket;
+        this.setPriority(Thread.MAX_PRIORITY);
     }
 
     @Override

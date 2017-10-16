@@ -113,12 +113,30 @@ public class RoomActivity extends Activity {
         @Override
         public void OnDataReceived(ServerThread server, final byte[] data, int length) {
             //sound.play(data[1]%4);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    MyUtil.showToast(RoomActivity.this, "received:" + data[1]);
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    MyUtil.showToast(RoomActivity.this, "received:" + data[1]);
+//                }
+//            });
+            if (data[0]==2&&data[1] == 1) {
+                switch (data[2]) {
+                    case 0x01://底鼓
+                        sound.play(2);
+                        break;
+                    case 0x02://军鼓
+                        sound.play(3);
+                        break;
+                    case 0x04://左擦
+                        sound.play(0);
+                        break;
+                    case 0x08://右擦
+                        sound.play(1);
+                        break;
+                    default:
+                        break;
                 }
-            });
+            }
         }
     };
     ServerSocket serverSocket;

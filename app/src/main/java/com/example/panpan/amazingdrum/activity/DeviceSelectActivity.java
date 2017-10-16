@@ -70,7 +70,7 @@ public class DeviceSelectActivity extends Activity {
             String name = device.getName();
             String addr = device.getAddress();
             int rssi = result.getRssi();
-            if ("bong4".equals(name))//AeroBand
+            if ("AeroBand".equals(name))//
             {
                 if (deviceMap.containsValue(addr)) {
                 } else {
