@@ -80,8 +80,8 @@ public class JoinActivityBle extends Activity {
                     finish();
                 }
                 if (MainBandActivity.instrumentType == 0x00) {
-                    PlayGuitarActivityBle.bleJoin = bleJoin;
-                    startActivity(new Intent(JoinActivityBle.this, PlayGuitarActivityBle.class));
+                    PlayGuitarActivityBle2.bleJoin = bleJoin;
+                    startActivity(new Intent(JoinActivityBle.this, PlayGuitarActivityBle2.class));
                     finish();
                 }
             }

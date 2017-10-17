@@ -119,13 +119,25 @@ public class BleServer {
     public boolean sendData(byte... data) {
         characteristicRead.setValue(data);
         BluetoothDevice device;
-        List<BluetoothDevice> devices=bluetoothManager.getConnectedDevices(BluetoothProfile.GATT_SERVER);
+        List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT_SERVER);
         for (int i = 0; i < devices.size(); i++) {
-            device=devices.get(i);
-            if(!bluetoothGattServer.notifyCharacteristicChanged(device, characteristicRead, false))
+            device = devices.get(i);
+            if (!bluetoothGattServer.notifyCharacteristicChanged(device, characteristicRead, false))
                 return false;
         }
         return true;
+    }
+
+    public boolean sendData(BluetoothDevice device, byte... data) {
+        characteristicRead.setValue(data);
+        if (bluetoothManager.getConnectionState(device, BluetoothProfile.GATT_SERVER) == BluetoothProfile.STATE_CONNECTED)
+            return bluetoothGattServer.notifyCharacteristicChanged(device, characteristicRead, false);
+        return false;
+    }
+
+    public void disConnect(BluetoothDevice device) {
+        if (bluetoothManager.getConnectionState(device, BluetoothProfile.GATT_SERVER) == BluetoothProfile.STATE_CONNECTED)
+            bluetoothGattServer.cancelConnection(device);
     }
 
     public void close() {

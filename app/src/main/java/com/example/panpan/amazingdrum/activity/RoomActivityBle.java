@@ -39,7 +39,7 @@ public class RoomActivityBle extends Activity {
     private BleServer bleServer;
     private ArrayMap<String, String> macName = new ArrayMap<>();
     private ChordPlay chordPlay;
-    private final String chords[]={"G","D","Em","Bm","Am","C"};
+    private final String chords[] = {"G", "D", "Em", "Bm", "Am", "C"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

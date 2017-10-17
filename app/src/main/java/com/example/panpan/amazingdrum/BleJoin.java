@@ -21,7 +21,7 @@ public class BleJoin extends Thread {
     private BleLink bleLink;
     private BluetoothAdapter mBluetoothAdapter;
     private boolean isScan = false;
-    private Handler handler=new Handler();
+    private Handler handler = new Handler();
 
     public BleJoin(Context context, String name) {
         setName(name);
@@ -121,7 +121,10 @@ public class BleJoin extends Thread {
         }
     };
 
-    private void sendName() {
+    /*
+    * 适用于RoomActivityBle和RoomActivity
+    * */
+    private void sendName2() {
         try {
             byte name[] = getName().getBytes("UTF-8");
             byte name2[] = new byte[name.length + 1];
@@ -132,6 +135,15 @@ public class BleJoin extends Thread {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+    * 适用于RoomActivityBle2
+    * */
+    private void sendName() {
+        byte name2[] = new byte[]{0x00, 0x00};
+        if (sendData(name2))
+            OnStateChanged(State.Verified);
     }
 
     private BleLink.BleListener bleListener = new BleLink.BleListener() {
@@ -157,7 +169,7 @@ public class BleJoin extends Thread {
                         public void run() {
                             sendName();
                         }
-                    },500);
+                    }, 500);
                     break;
                 case DEVICE_STATE_LINKFAILED:
 

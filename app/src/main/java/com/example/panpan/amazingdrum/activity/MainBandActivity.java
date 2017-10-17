@@ -59,7 +59,7 @@ public class MainBandActivity extends PermissionReqiureActivity {
                 startActivity(new Intent(this, JoinActivityBle.class));
                 break;
             case R.id.button6:
-                startActivity(new Intent(this, RoomActivityBle.class));
+                startActivity(new Intent(this, RoomActivityBle2.class));
                 break;
         }
     }

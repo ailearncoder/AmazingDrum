@@ -185,13 +185,22 @@ public class BleLink {
     }
 
     public enum DeviceState {
-        DEVICE_STATE_DISLINK,
-        DEVICE_STATE_LINKING,
-        DEVICE_STATE_LINKED,
-        DEVICE_STATE_LINKLOST,
-        DEVICE_STATE_LINKFAILED,
-        DEVICE_STATE_DISCOVERING,
-        DEVICE_STATE_CHARACTER
+        DEVICE_STATE_DISLINK(0),
+        DEVICE_STATE_LINKING(1),
+        DEVICE_STATE_LINKED(2),
+        DEVICE_STATE_LINKLOST(3),
+        DEVICE_STATE_LINKFAILED(4),
+        DEVICE_STATE_DISCOVERING(5),
+        DEVICE_STATE_CHARACTER(6);
+        private int _value;
+        DeviceState(int value)
+        {
+            _value = value;
+        }
+        public int value()
+        {
+            return _value;
+        }
     }
 
     private String errorMsg = "";

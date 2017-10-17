@@ -17,6 +17,8 @@ import android.widget.ListView;
 
 import com.example.panpan.amazingdrum.R;
 
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -26,6 +28,7 @@ public class DeviceSelectActivity extends Activity {
     ListView listView;
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayMap<Integer, String> deviceMap = new ArrayMap<>();
+    private ArrayList<String> deviceNameList=new ArrayList<>();
     private ArrayAdapter<String> adapter;
 
     @Override
@@ -39,7 +42,7 @@ public class DeviceSelectActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent();
-                intent.putExtra("name","");
+                intent.putExtra("name",deviceNameList.get(position));
                 intent.putExtra("addr",deviceMap.get(position));
                 setResult(RESULT_OK,intent);
                 finish();
@@ -74,6 +77,7 @@ public class DeviceSelectActivity extends Activity {
             {
                 if (deviceMap.containsValue(addr)) {
                 } else {
+                    deviceNameList.add(name);
                     deviceMap.put(adapter.getCount(), addr);
                     adapter.add("Name:" + name + "\nMac:" + addr);
                     adapter.notifyDataSetChanged();
