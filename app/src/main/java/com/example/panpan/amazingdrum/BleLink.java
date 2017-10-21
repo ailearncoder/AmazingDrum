@@ -1,6 +1,7 @@
 
 package com.example.panpan.amazingdrum;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -9,7 +10,10 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.os.Handler;
 
 import java.util.UUID;
 
@@ -191,14 +195,15 @@ public class BleLink {
         DEVICE_STATE_LINKLOST(3),
         DEVICE_STATE_LINKFAILED(4),
         DEVICE_STATE_DISCOVERING(5),
-        DEVICE_STATE_CHARACTER(6);
+        DEVICE_STATE_CHARACTER(6),
+        DEVICE_STATE_SCANING(7),
+        DEVICE_STATE_SCANFAILED(8);
         private int _value;
-        DeviceState(int value)
-        {
+
+        DeviceState(int value) {
             _value = value;
         }
-        public int value()
-        {
+        public int value() {
             return _value;
         }
     }
@@ -210,6 +215,41 @@ public class BleLink {
 
     public BleLink(Context context) {
         this.context = context;
+    }
+
+    private ScanCallback scanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            BluetoothDevice device=result.getDevice();
+            if(device.getAddress().equals(address)) {
+                BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+                adapter.getBluetoothLeScanner().stopScan(scanCallback);
+                link(device);
+            }
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            OnDeviceStateChanged(DeviceState.DEVICE_STATE_SCANFAILED);
+        }
+    };
+
+    public boolean scanLink(String address) {
+        OnDeviceStateChanged(DeviceState.DEVICE_STATE_SCANING);
+        this.address = address;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(getDeviceState()==DeviceState.DEVICE_STATE_SCANING) {
+                    BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+                    adapter.getBluetoothLeScanner().stopScan(scanCallback);
+                    OnDeviceStateChanged(DeviceState.DEVICE_STATE_SCANFAILED);
+                }
+            }
+        },5000);
+        BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        adapter.getBluetoothLeScanner().startScan(scanCallback);
+        return true;
     }
 
     public boolean link(String address) {
