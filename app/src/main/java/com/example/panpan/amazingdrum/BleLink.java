@@ -203,6 +203,7 @@ public class BleLink {
         DeviceState(int value) {
             _value = value;
         }
+
         public int value() {
             return _value;
         }
@@ -220,8 +221,8 @@ public class BleLink {
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            BluetoothDevice device=result.getDevice();
-            if(device.getAddress().equals(address)) {
+            BluetoothDevice device = result.getDevice();
+            if (device.getAddress().equals(address)) {
                 BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
                 adapter.getBluetoothLeScanner().stopScan(scanCallback);
                 link(device);
@@ -233,20 +234,21 @@ public class BleLink {
             OnDeviceStateChanged(DeviceState.DEVICE_STATE_SCANFAILED);
         }
     };
+    private Handler handler = new Handler();
 
     public boolean scanLink(String address) {
         OnDeviceStateChanged(DeviceState.DEVICE_STATE_SCANING);
         this.address = address;
-        new Handler().postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(getDeviceState()==DeviceState.DEVICE_STATE_SCANING) {
+                if (getDeviceState() == DeviceState.DEVICE_STATE_SCANING) {
                     BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
                     adapter.getBluetoothLeScanner().stopScan(scanCallback);
                     OnDeviceStateChanged(DeviceState.DEVICE_STATE_SCANFAILED);
                 }
             }
-        },5000);
+        }, 5000);
         BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         adapter.getBluetoothLeScanner().startScan(scanCallback);
         return true;
@@ -275,7 +277,8 @@ public class BleLink {
         if (deviceState != DeviceState.DEVICE_STATE_DISLINK) {
             if (mBluetoothGatt != null) {
                 mBluetoothGatt.disconnect();
-                mBluetoothGatt.close();
+                if (mBluetoothGatt != null)
+                    mBluetoothGatt.close();
                 mBluetoothGatt = null;
             }
             OnDeviceStateChanged(DeviceState.DEVICE_STATE_DISLINK);

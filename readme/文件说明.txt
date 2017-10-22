@@ -1,0 +1,5 @@
+PlayDrumActivity     //主机WiFi播放声音       从机蓝牙连接拨片   主从WiFi通信
+PlayDrumActivity2    //主机WiFi+蓝牙播放声音  从机不连接拨片     主从WiFi通信
+PlayDrumActivityBle  //主机蓝牙播放声音       从机蓝牙连接拨片   主从蓝牙通信
+PlayDrumActivityBle2 //主机蓝牙+蓝牙播放声音  从机不连接拨片     主从蓝牙通信
+...命名以此类推

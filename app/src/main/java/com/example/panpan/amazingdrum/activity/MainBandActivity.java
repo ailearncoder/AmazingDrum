@@ -56,10 +56,10 @@ public class MainBandActivity extends PermissionReqiureActivity {
                 instrumentType = 3;
                 break;
             case R.id.button5:
-                startActivity(new Intent(this, JoinActivityBle.class));
+                startActivity(new Intent(this, JoinActivity2.class));
                 break;
             case R.id.button6:
-                startActivity(new Intent(this, RoomActivityBle2.class));
+                startActivity(new Intent(this, RoomActivity2.class));
                 break;
         }
     }

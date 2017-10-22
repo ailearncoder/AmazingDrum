@@ -2,7 +2,6 @@ package com.example.panpan.amazingdrum.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -34,7 +33,6 @@ public class RoomActivity extends Activity {
     Button buttonBegin;
     private ArrayList<ServerThread> servers = new ArrayList<>();
     private ArrayAdapter<String> adapter;
-    private Handler handler = new Handler();
     private Sound sound;
 
     @Override
@@ -92,7 +90,7 @@ public class RoomActivity extends Activity {
 
     private ServerThread.OnServerListener serverListener = new ServerThread.OnServerListener() {
         @Override
-        public void OnStateChanged(ServerThread server, ServerThread.State state) {
+        public void OnStateChanged(ServerThread server, ServerThread.LinkState state) {
             synchronized (this) {
                 switch (state) {
                     case Linked:

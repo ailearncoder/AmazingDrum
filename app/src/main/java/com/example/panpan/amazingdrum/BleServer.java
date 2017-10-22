@@ -127,7 +127,6 @@ public class BleServer {
         }
         return true;
     }
-
     public boolean sendData(BluetoothDevice device, byte... data) {
         characteristicRead.setValue(data);
         if (bluetoothManager.getConnectionState(device, BluetoothProfile.GATT_SERVER) == BluetoothProfile.STATE_CONNECTED)

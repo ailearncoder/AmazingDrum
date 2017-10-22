@@ -20,6 +20,7 @@ public class JoinThread extends Thread {
     public JoinThread(String name, String host) {
         this.host = host;
         setName(name);
+        this.setPriority(Thread.MAX_PRIORITY);
     }
 
     @Override

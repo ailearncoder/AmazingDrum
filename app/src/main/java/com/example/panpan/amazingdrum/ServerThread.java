@@ -14,7 +14,7 @@ public class ServerThread extends Thread {
     private boolean isRun = false;
     private Socket socket;
     private OutputStream outputStream;
-    private State state = State.None;
+    private LinkState state = LinkState.None;
     private OnServerListener listener;
 
     public ServerThread(Socket socket) {
@@ -34,14 +34,14 @@ public class ServerThread extends Thread {
             outputStream = os;
             byte data[] = new byte[128];
             int length = 0;
-            OnStateChanged(State.Linked);
+            OnStateChanged(LinkState.Linked);
             length = is.read(data);
             if(length>0)
             {
                 if(data[0]==0x00) {
                     String name=new String(data,1,data.length-1,"UTF-8");
                     this.tag=name;
-                    OnStateChanged(State.Verified);
+                    OnStateChanged(LinkState.Verified);
                 }
             }
             while (isRun) {
@@ -64,10 +64,10 @@ public class ServerThread extends Thread {
         }
         close();
         isRun = false;
-        OnStateChanged(State.Dislink);
+        OnStateChanged(LinkState.Dislink);
     }
 
-    private synchronized void close() {
+    public synchronized void close() {
         try {
             if (outputStream != null) {
                 outputStream.close();
@@ -110,9 +110,12 @@ public class ServerThread extends Thread {
         return false;
     }
 
-    void OnStateChanged(State state) {
-        if (this.state != state) {
-            this.state = state;
+    public LinkState getLinkState() {
+        return state;
+    }
+    void OnStateChanged(LinkState linkState) {
+        if (this.state != linkState) {
+            this.state = linkState;
             if (listener != null)
                 listener.OnStateChanged(this, state);
         }
@@ -136,12 +139,12 @@ public class ServerThread extends Thread {
     }
 
     public interface OnServerListener {
-        void OnStateChanged(ServerThread server, State state);
+        void OnStateChanged(ServerThread server, LinkState state);
 
         void OnDataReceived(ServerThread server, byte[] data, int length);
     }
 
-    public enum State {
+    public enum LinkState {
         None,
         Linked,
         Verified,

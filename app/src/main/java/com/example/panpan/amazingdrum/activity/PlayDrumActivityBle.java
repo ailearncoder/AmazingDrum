@@ -24,7 +24,7 @@ import butterknife.OnClick;
 
 public class PlayDrumActivityBle extends Activity {
     public static BleJoin bleJoin;
-    @InjectView(R.id.play_button_1)
+    @InjectView(R.id.play_button_6)
     Button playButton1;
     @InjectView(R.id.play_button_2)
     Button playButton2;

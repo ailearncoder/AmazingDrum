@@ -17,6 +17,9 @@ public class Download {
 	public static String getBassPath() {
 		return getResourcePath() + "/BandSound/贝斯1";
 	}
+	public static String getBassPath2() {
+		return getResourcePath() + "/BassSound";
+	}
 
 	public static String getLocalSongPath() {
 		return getResourcePath() + "/Song";
@@ -48,5 +51,9 @@ public class Download {
 
 	public static String getDefaultDrumPath() {
 		return getResourcePath() + "/DefaultDrum";
+	}
+	public static String getElectricGuitarPath()
+	{
+		return getResourcePath() + "/ElectricGuitarSound";
 	}
 }

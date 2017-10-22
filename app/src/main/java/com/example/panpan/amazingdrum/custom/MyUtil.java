@@ -24,6 +24,30 @@ public class MyUtil {
             e.printStackTrace();
         }
     }
+    /***
+     * 高字节在前
+     */
+    public static int byte2Int(int offset,byte... data)
+    {
+       int result=0;
+        for (int i = offset; i < data.length; i++) {
+            result<<=8;
+            result|=byte2Int(data[i]);
+        }
+        return result;
+    }
+    /***
+     * 高字节在前
+     */
+    public static byte[] int2Byte(int num,int bytes)
+    {
+        byte[] result=new byte[bytes];
+        for (int i = result.length-1; i >-1 ; i--) {
+            result[result.length-1-i]=(byte)((num&(0xFF<<(i*8)))>>>(i*8));
+        }
+        return result;
+    }
+
     public static int byte2Int(byte data)
     {
         if(data<0)
@@ -37,7 +61,7 @@ public class MyUtil {
     public static String bytes2Addr(byte data[],int offset)
     {
         String result="";
-        for (int i = offset; i < data.length; i++) {
+        for (int i = offset; i < offset+6; i++) {
             if(i!=offset)
                 result+=":";
             result+=byte2HexStr(data[i]);

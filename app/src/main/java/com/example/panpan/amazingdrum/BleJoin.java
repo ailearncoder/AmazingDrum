@@ -8,6 +8,8 @@ import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.Handler;
 
+import com.example.panpan.amazingdrum.activity.MainBandActivity;
+
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -141,7 +143,7 @@ public class BleJoin extends Thread {
     * 适用于RoomActivityBle2
     * */
     private void sendName() {
-        byte name2[] = new byte[]{0x00, 0x00};
+        byte name2[] = new byte[]{0x00, (byte) MainBandActivity.instrumentType};
         if (sendData(name2))
             OnStateChanged(State.Verified);
     }

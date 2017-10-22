@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.panpan.amazingdrum.BleJoin;
 import com.example.panpan.amazingdrum.BleLink;
+import com.example.panpan.amazingdrum.JoinThread;
 import com.example.panpan.amazingdrum.R;
 import com.example.panpan.amazingdrum.custom.MyUtil;
 
@@ -20,9 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PlayGuitarActivityBle2 extends Activity {
-    public static BleJoin bleJoin;
-    @InjectView(R.id.play_button_6)
+public class PlayBassActivity2 extends Activity {
+    public JoinThread joinThread;
+    @InjectView(R.id.play_button_1)
     Button playButton1;
     @InjectView(R.id.play_button_2)
     Button playButton2;
@@ -34,6 +34,10 @@ public class PlayGuitarActivityBle2 extends Activity {
     Button playButton5;
     @InjectView(R.id.play_button_6)
     Button playButton6;
+    @InjectView(R.id.play_button_7)
+    Button playButton7;
+    @InjectView(R.id.play_button_8)
+    Button playButton8;
     @InjectView(R.id.device_info_text)
     TextView deviceInfoText;
     @InjectView(R.id.device_setlect_btn)
@@ -45,34 +49,43 @@ public class PlayGuitarActivityBle2 extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play_guitar);
+        setContentView(R.layout.activity_play_bass);
         ButterKnife.inject(this);
         previousButton = playButton1;
-        if (bleJoin != null)
-            bleJoin.setListener(bleJoinListener);
+        joinThread = PlayActivity.joinThread;
+        if (joinThread != null)
+            joinThread.setListener(joinListener);
         playButton1.setOnTouchListener(onPlayTouchListener);
         playButton2.setOnTouchListener(onPlayTouchListener);
         playButton3.setOnTouchListener(onPlayTouchListener);
         playButton4.setOnTouchListener(onPlayTouchListener);
         playButton5.setOnTouchListener(onPlayTouchListener);
         playButton6.setOnTouchListener(onPlayTouchListener);
+        playButton7.setOnTouchListener(onPlayTouchListener);
+        playButton8.setOnTouchListener(onPlayTouchListener);
         playButton1.setId(0);
         playButton2.setId(1);
         playButton3.setId(2);
         playButton4.setId(3);
         playButton5.setId(4);
         playButton6.setId(5);
+        playButton7.setId(6);
+        playButton8.setId(7);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
-    private BleJoin.OnJoinListener bleJoinListener = new BleJoin.OnJoinListener() {
+    private JoinThread.OnJoinListener joinListener = new JoinThread.OnJoinListener() {
         @Override
-        public void OnStateChanged(BleJoin thread, BleJoin.State state) {
-
+        public void OnStateChanged(JoinThread thread, JoinThread.State state) {
+            switch (state) {
+                case Dislink:
+                    finish();
+                    break;
+            }
         }
 
         @Override
-        public void OnDataReceived(BleJoin thread, byte[] data, int length) {
+        public void OnDataReceived(JoinThread thread, byte[] data, int length) {
             switch (data[0]) {
                 case 0x04:
                     int index = data[2];
@@ -87,9 +100,9 @@ public class PlayGuitarActivityBle2 extends Activity {
 
     @Override
     protected void onDestroy() {
-        if (bleJoin != null)
-            bleJoin.close();
-        bleJoin = null;
+        if (joinThread != null)
+            joinThread.close();
+        joinThread = null;
         super.onDestroy();
     }
 
@@ -100,10 +113,12 @@ public class PlayGuitarActivityBle2 extends Activity {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 int id = v.getId();
                 chordIndex = (byte) id;
+                joinThread.write((byte) 0x05, (byte) 0x02,chordIndex);
                 ((Button) v).setTextColor(Color.BLUE);
-                previousButton.setTextColor(Color.BLACK);
-                previousButton = (Button) v;
-                bleJoin.sendData((byte)0x05,(byte) 0x00,chordIndex);
+                if (previousButton != v) {
+                    previousButton.setTextColor(Color.BLACK);
+                    previousButton = (Button) v;
+                }
             }
             return false;
         }
@@ -153,11 +168,11 @@ public class PlayGuitarActivityBle2 extends Activity {
                     break;
                 case DEVICE_STATE_LINKFAILED:
                     cancelProgressDialog();
-                    MyUtil.showToast(PlayGuitarActivityBle2.this, "设备连接失败");
+                    MyUtil.showToast(PlayBassActivity2.this, "设备连接失败");
                     break;
                 case DEVICE_STATE_LINKLOST:
                     cancelProgressDialog();
-                    MyUtil.showToast(PlayGuitarActivityBle2.this, "设备连接丢失");
+                    MyUtil.showToast(PlayBassActivity2.this, "设备连接丢失");
                     break;
             }
             isUIRun = false;
@@ -176,12 +191,12 @@ public class PlayGuitarActivityBle2 extends Activity {
             if (resultCode == RESULT_OK) {
                 name = data.getStringExtra("name");
                 address = data.getStringExtra("addr");
-                byte addr[]=MyUtil.addr2Bytes(address);
-                byte data2[]=new byte[addr.length+2];
-                data2[0]=0x03;
-                data2[1]=0x00;
-                System.arraycopy(addr,0,data2,2,addr.length);
-                bleJoin.sendData(data2);
+                byte addr[] = MyUtil.addr2Bytes(address);
+                byte data2[] = new byte[addr.length + 2];
+                data2[0] = 0x03;
+                data2[1] = 0x02;
+                System.arraycopy(addr, 0, data2, 2, addr.length);
+                joinThread.write(data2);
             }
         }
     }

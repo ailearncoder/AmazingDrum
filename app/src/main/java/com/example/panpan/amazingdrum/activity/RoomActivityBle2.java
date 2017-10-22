@@ -204,7 +204,10 @@ public class RoomActivityBle2 extends Activity {
     @OnClick(R.id.button_begin)
     public void onViewClicked() {
         if (macName.size() > 0) {
-            bleServer.sendData((byte) 0x01, (byte) 0x00);
+            if (guitarDevice != null)
+                bleServer.sendData(guitarDevice, (byte) 0x01, (byte) 0x00);
+            if (drumDevice != null)
+                bleServer.sendData(drumDevice, (byte) 0x01, (byte) 0x00);
         } else {
             MyUtil.showToast(this, "等待玩家加入房间");
         }
@@ -233,13 +236,21 @@ public class RoomActivityBle2 extends Activity {
     private BleServer.OnServerListener bleListener = new BleServer.OnServerListener() {
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
+            if(guitarBleLink!=null)
+                if(device.getAddress().equals(guitarBleLink.getAddress()))
+                    return;
+            if(drumBleLink!=null)
+                if(device.getAddress().equals(drumBleLink.getAddress()))
+                    return;
             switch (newState) {
                 case BluetoothProfile.STATE_CONNECTED:
                     break;
                 case BluetoothProfile.STATE_DISCONNECTED:
                     String address = device.getAddress();
-                    if(address.equals(guitarDevice.getAddress()))
+                    if (guitarDevice!=null&&address.equals(guitarDevice.getAddress()))
                         guitarBleLink.dislink();
+                    if (drumDevice!=null&&address.equals(drumDevice.getAddress()))
+                        drumBleLink.dislink();
                     if (macName.containsKey(address)) {
                         macName.remove(address);
                         runOnUiThread(listRunnable);
@@ -269,16 +280,17 @@ public class RoomActivityBle2 extends Activity {
                     if (value[1] == 0x00)//连接吉他
                     {
                         guitarDevice = device;
-                        guitarBleLink.link(MyUtil.bytes2Addr(value, 2));
+                        guitarBleLink.scanLink(MyUtil.bytes2Addr(value, 2));
                     } else if (value[1] == 0x01)//连接鼓
                     {
                         drumDevice = device;
-                        drumBleLink.link(MyUtil.bytes2Addr(value, 2));
+                        drumBleLink.scanLink(MyUtil.bytes2Addr(value, 2));
                     }
                     break;
                 case 0x05:
                     if (value[1] == 0x00)//吉他
                     {
+                        rhythmIndex = 0;
                         chordIndex = value[2];
                         guitarDevice = device;
                     } else if (value[1] == 0x01)//鼓

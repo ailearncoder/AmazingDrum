@@ -9,10 +9,11 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.panpan.amazingdrum.BleJoin;
 import com.example.panpan.amazingdrum.BleLink;
+import com.example.panpan.amazingdrum.JoinThread;
 import com.example.panpan.amazingdrum.R;
 import com.example.panpan.amazingdrum.custom.MyUtil;
 
@@ -20,9 +21,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PlayGuitarActivityBle2 extends Activity {
-    public static BleJoin bleJoin;
-    @InjectView(R.id.play_button_6)
+public class PlayGuitarActivity2 extends Activity {
+    public JoinThread joinThread;
+    @InjectView(R.id.play_button_1)
     Button playButton1;
     @InjectView(R.id.play_button_2)
     Button playButton2;
@@ -38,8 +39,13 @@ public class PlayGuitarActivityBle2 extends Activity {
     TextView deviceInfoText;
     @InjectView(R.id.device_setlect_btn)
     Button deviceSetlectBtn;
+    @InjectView(R.id.text_progress)
+    TextView textProgress;
+    @InjectView(R.id.progressBar)
+    ProgressBar progressBar;
     private byte chordIndex = 0;
     private String name, address;
+    private final String hintText[] = {"下", "下", "上", "上", "下", "上"};
 
     @SuppressWarnings("ResourceType")
     @Override
@@ -48,8 +54,9 @@ public class PlayGuitarActivityBle2 extends Activity {
         setContentView(R.layout.activity_play_guitar);
         ButterKnife.inject(this);
         previousButton = playButton1;
-        if (bleJoin != null)
-            bleJoin.setListener(bleJoinListener);
+        joinThread = PlayActivity.joinThread;
+        if (joinThread != null)
+            joinThread.setListener(joinListener);
         playButton1.setOnTouchListener(onPlayTouchListener);
         playButton2.setOnTouchListener(onPlayTouchListener);
         playButton3.setOnTouchListener(onPlayTouchListener);
@@ -65,14 +72,18 @@ public class PlayGuitarActivityBle2 extends Activity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
-    private BleJoin.OnJoinListener bleJoinListener = new BleJoin.OnJoinListener() {
+    private JoinThread.OnJoinListener joinListener = new JoinThread.OnJoinListener() {
         @Override
-        public void OnStateChanged(BleJoin thread, BleJoin.State state) {
-
+        public void OnStateChanged(JoinThread thread, JoinThread.State state) {
+            switch (state) {
+                case Dislink:
+                    finish();
+                    break;
+            }
         }
 
         @Override
-        public void OnDataReceived(BleJoin thread, byte[] data, int length) {
+        public void OnDataReceived(JoinThread thread, byte[] data, int length) {
             switch (data[0]) {
                 case 0x04:
                     int index = data[2];
@@ -81,15 +92,30 @@ public class PlayGuitarActivityBle2 extends Activity {
                     runOnUiThread(bleStateRunnable);
                     while (isUIRun) ;
                     break;
+                case 0x05:
+                    progress = data[2];
+                    runOnUiThread(progressRunnable);
+                    break;
             }
+        }
+    };
+    private int progress = 0;
+    private Runnable progressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (progress < 5)
+                progressBar.setProgress(progress + 1);
+            else
+                progressBar.setProgress(0);
+            textProgress.setText(hintText[progress]);
         }
     };
 
     @Override
     protected void onDestroy() {
-        if (bleJoin != null)
-            bleJoin.close();
-        bleJoin = null;
+        if (joinThread != null)
+            joinThread.close();
+        joinThread = null;
         super.onDestroy();
     }
 
@@ -100,10 +126,14 @@ public class PlayGuitarActivityBle2 extends Activity {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 int id = v.getId();
                 chordIndex = (byte) id;
+                joinThread.write((byte) 0x05, (byte) 0x00, chordIndex);
                 ((Button) v).setTextColor(Color.BLUE);
-                previousButton.setTextColor(Color.BLACK);
-                previousButton = (Button) v;
-                bleJoin.sendData((byte)0x05,(byte) 0x00,chordIndex);
+                if (previousButton != v) {
+                    previousButton.setTextColor(Color.BLACK);
+                    previousButton = (Button) v;
+                }
+                progressBar.setProgress(0);
+                textProgress.setText(hintText[0]);
             }
             return false;
         }
@@ -153,11 +183,11 @@ public class PlayGuitarActivityBle2 extends Activity {
                     break;
                 case DEVICE_STATE_LINKFAILED:
                     cancelProgressDialog();
-                    MyUtil.showToast(PlayGuitarActivityBle2.this, "设备连接失败");
+                    MyUtil.showToast(PlayGuitarActivity2.this, "设备连接失败");
                     break;
                 case DEVICE_STATE_LINKLOST:
                     cancelProgressDialog();
-                    MyUtil.showToast(PlayGuitarActivityBle2.this, "设备连接丢失");
+                    MyUtil.showToast(PlayGuitarActivity2.this, "设备连接丢失");
                     break;
             }
             isUIRun = false;
@@ -176,12 +206,12 @@ public class PlayGuitarActivityBle2 extends Activity {
             if (resultCode == RESULT_OK) {
                 name = data.getStringExtra("name");
                 address = data.getStringExtra("addr");
-                byte addr[]=MyUtil.addr2Bytes(address);
-                byte data2[]=new byte[addr.length+2];
-                data2[0]=0x03;
-                data2[1]=0x00;
-                System.arraycopy(addr,0,data2,2,addr.length);
-                bleJoin.sendData(data2);
+                byte addr[] = MyUtil.addr2Bytes(address);
+                byte data2[] = new byte[addr.length + 2];
+                data2[0] = 0x03;
+                data2[1] = 0x00;
+                System.arraycopy(addr, 0, data2, 2, addr.length);
+                joinThread.write(data2);
             }
         }
     }
