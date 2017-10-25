@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,8 @@ public class PlayBassActivity2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_bass);
         ButterKnife.inject(this);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         previousButton = playButton1;
         joinThread = PlayActivity.joinThread;
         if (joinThread != null)

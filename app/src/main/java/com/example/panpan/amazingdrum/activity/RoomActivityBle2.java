@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.example.panpan.amazingdrum.BleLink;
 import com.example.panpan.amazingdrum.BleServer;
 import com.example.panpan.amazingdrum.R;
-import com.example.panpan.amazingdrum.Sound;
+import com.example.panpan.amazingdrum.sound.Sound;
 import com.example.panpan.amazingdrum.custom.MyUtil;
 import com.example.panpan.amazingdrum.sound.ChordPlay;
 import com.example.panpan.amazingdrum.util.Download;

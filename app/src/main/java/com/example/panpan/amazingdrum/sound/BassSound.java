@@ -15,6 +15,7 @@ import com.example.panpan.amazingdrum.util.Download;
 public class BassSound {
     private SoundPool soundPool;
     private ArrayMap<Integer,Integer> soundId=new ArrayMap<>();
+private static float volume=1;
 
     public void init(Context context,int[] nameList) {
         soundPool = new SoundPool.Builder()
@@ -36,7 +37,7 @@ public class BassSound {
 private int previousStreamId=0;
     private int streamId=0;
     public void play(int name) {
-        streamId=soundPool.play(soundId.get(name), 1, 1, 1, 0, 1);
+        streamId=soundPool.play(soundId.get(name), volume, volume, 1, 0, 1);
         try {
             Thread.sleep(80);
         } catch (InterruptedException e) {
@@ -46,6 +47,9 @@ private int previousStreamId=0;
         previousStreamId=streamId;
     }
 
+    public static void setVolume(byte volume) {
+        BassSound.volume = volume / 100.0f;
+    }
     public void release() {
         soundPool.release();
         soundPool = null;

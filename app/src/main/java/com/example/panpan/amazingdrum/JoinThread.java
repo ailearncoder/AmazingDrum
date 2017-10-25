@@ -57,6 +57,7 @@ public class JoinThread extends Thread {
         try {
             if (outputStream != null) {
                 outputStream.write(data);
+                outputStream.flush();
                 return true;
             }
         } catch (Exception e) {

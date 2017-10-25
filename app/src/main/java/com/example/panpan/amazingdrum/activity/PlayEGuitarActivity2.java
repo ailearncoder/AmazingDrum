@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,8 @@ public class PlayEGuitarActivity2 extends Activity {
     ImageButton playButton6;
     @InjectView(R.id.play_button_7)
     ImageButton playButton7;
+    @InjectView(R.id.play_button_8)
+    Button playButton8;
     @InjectView(R.id.text_rhythm)
     TextView textRhythm;
     private byte chordIndex = 0;
@@ -52,6 +55,8 @@ public class PlayEGuitarActivity2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_eguitar);
         ButterKnife.inject(this);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         previousButton = playButton1;
         joinThread = PlayActivity.joinThread;
         if (joinThread != null)
@@ -63,6 +68,7 @@ public class PlayEGuitarActivity2 extends Activity {
         playButton5.setOnTouchListener(onPlayTouchListener);
         playButton6.setOnTouchListener(onPlayTouchListener);
         playButton7.setOnTouchListener(onPlayTouchListener);
+        playButton8.setOnTouchListener(onPlayTouchListener);
         playButton1.setId(0);
         playButton2.setId(1);
         playButton3.setId(2);
@@ -70,6 +76,7 @@ public class PlayEGuitarActivity2 extends Activity {
         playButton5.setId(4);
         playButton6.setId(5);
         playButton7.setId(6);
+        playButton8.setId(7);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 

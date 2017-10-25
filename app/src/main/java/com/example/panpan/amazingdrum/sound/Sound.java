@@ -1,9 +1,11 @@
-package com.example.panpan.amazingdrum;
+package com.example.panpan.amazingdrum.sound;
 
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+
+import com.example.panpan.amazingdrum.R;
 
 /**
  * Created by PanXuesen on 2017/8/22.
@@ -12,7 +14,7 @@ import android.media.SoundPool;
 public class Sound {
     private SoundPool soundPool;
     private int soundId[] = new int[4];
-
+    private static float volume=1;
     public void init(Context context) {
         soundPool = new SoundPool.Builder()
                 .setAudioAttributes(
@@ -32,9 +34,11 @@ public class Sound {
     }
 
     public void play(int index) {
-        soundPool.play(soundId[index], 1, 1, 1, 0, 1);
+        soundPool.play(soundId[index], volume, volume, 1, 0, 1);
     }
-
+    public static void setVolume(byte volume) {
+        Sound.volume = volume / 100.0f;
+    }
     public void release() {
         soundPool.release();
         soundPool = null;

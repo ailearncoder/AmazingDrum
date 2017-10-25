@@ -31,6 +31,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.example.panpan.amazingdrum.sound.Sound;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity

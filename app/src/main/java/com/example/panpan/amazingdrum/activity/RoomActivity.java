@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.panpan.amazingdrum.R;
 import com.example.panpan.amazingdrum.ServerThread;
-import com.example.panpan.amazingdrum.Sound;
+import com.example.panpan.amazingdrum.sound.Sound;
 import com.example.panpan.amazingdrum.custom.MyUtil;
 import com.example.panpan.amazingdrum.util.IpAdressUtils;
 

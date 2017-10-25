@@ -1,6 +1,8 @@
 package com.example.panpan.amazingdrum.activity;
 
 import android.app.Activity;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -8,16 +10,17 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.panpan.amazingdrum.BleLink;
 import com.example.panpan.amazingdrum.R;
 import com.example.panpan.amazingdrum.ServerThread;
-import com.example.panpan.amazingdrum.Sound;
 import com.example.panpan.amazingdrum.custom.MyUtil;
 import com.example.panpan.amazingdrum.sound.BassSound;
 import com.example.panpan.amazingdrum.sound.ChordPlay;
 import com.example.panpan.amazingdrum.sound.EGuitarSound;
+import com.example.panpan.amazingdrum.sound.Sound;
 import com.example.panpan.amazingdrum.util.Download;
 import com.example.panpan.amazingdrum.util.IpAdressUtils;
 import com.example.panpan.amazingdrum.util.UartDataDeal;
@@ -38,6 +41,14 @@ public class RoomActivity2 extends Activity {
     ListView listMembers;
     @InjectView(R.id.button_begin)
     Button buttonBegin;
+    @InjectView(R.id.seekBar)
+    SeekBar seekBar;
+    @InjectView(R.id.seekBar2)
+    SeekBar seekBar2;
+    @InjectView(R.id.seekBar3)
+    SeekBar seekBar3;
+    @InjectView(R.id.seekBar4)
+    SeekBar seekBar4;
     private ArrayList<ServerThread> servers = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private Handler handler = new Handler();
@@ -45,6 +56,7 @@ public class RoomActivity2 extends Activity {
     private BassSound bassSound;
     private EGuitarSound eGuitarSound;
     private ChordPlay chordPlay;
+    private MediaPlayer mediaPlayer;
     private final String chords[] = {"G", "D", "Em", "Bm", "Am", "C"};
     private final int eChords[][] = {
             new int[]{405, 505, 603}, new int[]{307, 407, 505},
@@ -83,17 +95,33 @@ public class RoomActivity2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         ButterKnife.inject(this);
-        initView();
-        startListen();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        initView();
+        startListen();
         sound = new Sound();
         sound.init(this);
         initSound();
         initBassSound();
         initEGuitarSound();
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(Download.getResourcePath() + "/不再犹豫.mp3");
+            mediaPlayer.prepare();
+        } catch (Exception e) {
+
+        }
         initBleLink();
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
+
+    private Runnable mediaRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mediaPlayer.isPlaying())
+                mediaPlayer.pause();
+        }
+    };
 
     private void initBleLink() {
         BleLink.BleListener guitarListener = new BleLink.BleListener() {
@@ -135,10 +163,9 @@ public class RoomActivity2 extends Activity {
                     return;
                 if (data[9] == 0)
                     return;
-                if(chordIndex!=chordIndex2)
-                {
-                    rhythmIndex=0;
-                    chordIndex=chordIndex2;
+                if (chordIndex != chordIndex2) {
+                    rhythmIndex = 0;
+                    chordIndex = chordIndex2;
                 }
                 if (data[6] != rhythm[rhythmIndex])
                     return;
@@ -303,10 +330,16 @@ public class RoomActivity2 extends Activity {
                     return;
                 switch (data[6]) {
                     case 0x00:
-                        if(eChordIndex!=eChordIndex2)
-                        {
-                            eRhythmIndex=0;
-                            eChordIndex=eChordIndex2;
+                        if (eChordIndex != eChordIndex2) {
+                            eRhythmIndex = 0;
+                            eChordIndex = eChordIndex2;
+                        }
+                        if (eChordIndex == 7) {
+                            if (!mediaPlayer.isPlaying())
+                                mediaPlayer.start();
+                            handler.removeCallbacks(mediaRunnable);
+                            handler.postDelayed(mediaRunnable, 2000);
+                            return;
                         }
                         if (eChordIndex < 5)//0-4
                         {
@@ -380,6 +413,37 @@ public class RoomActivity2 extends Activity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         listMembers.setAdapter(adapter);
         textInfo.setText("How to enter room?\nPlease input:" + IpAdressUtils.getIp(this));
+        SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekBar == RoomActivity2.this.seekBar) {
+                    ChordPlay.setVolume(progress);
+                }
+                if (seekBar == RoomActivity2.this.seekBar2) {
+                    Sound.setVolume((byte) progress);
+                }
+                if (seekBar == RoomActivity2.this.seekBar3) {
+                    EGuitarSound.setVolume((byte) progress);
+                }
+                if (seekBar == RoomActivity2.this.seekBar4) {
+                    BassSound.setVolume((byte) progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        };
+        seekBar.setOnSeekBarChangeListener(seekListener);
+        seekBar2.setOnSeekBarChangeListener(seekListener);
+        seekBar3.setOnSeekBarChangeListener(seekListener);
+        seekBar4.setOnSeekBarChangeListener(seekListener);
     }
 
     @OnClick(R.id.button_begin)
@@ -483,6 +547,7 @@ public class RoomActivity2 extends Activity {
                 case 0x05:
                     if (value[1] == 0x00)//吉他
                     {
+                        rhythmIndex = 0;
                         chordIndex2 = value[2];
                         guitarDevice = server;
                     } else if (value[1] == 0x01)//鼓
@@ -495,6 +560,7 @@ public class RoomActivity2 extends Activity {
                         bassDevice = server;
                     } else if (value[1] == 0x03)//电吉他
                     {
+                        eRhythmIndex = 0;
                         eChordIndex2 = value[2];
                         eGuitarDevice = server;
                     }
@@ -542,6 +608,7 @@ public class RoomActivity2 extends Activity {
         sound.release();
         bassSound.release();
         eGuitarSound.release();
+        mediaPlayer.release();
         super.onDestroy();
     }
 }

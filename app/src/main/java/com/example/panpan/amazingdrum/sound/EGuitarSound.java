@@ -16,7 +16,7 @@ import com.example.panpan.amazingdrum.util.GuitarSound2Piano;
 public class EGuitarSound {
     private SoundPool soundPool;
     private ArrayMap<Integer, Integer> soundId = new ArrayMap<>();
-
+    private static float volume=1;
     public void init(Context context, int[] nameList) {
         soundPool = new SoundPool.Builder()
                 .setAudioAttributes(
@@ -40,7 +40,7 @@ public class EGuitarSound {
 
     public void play(int[] name) {
         for (int i = 0; i < name.length; i++) {
-            streamId[i] = soundPool.play(soundId.get(name[i]), 1, 1, 1, 0, 1);
+            streamId[i] = soundPool.play(soundId.get(name[i]), volume, volume, 1, 0, 1);
         }
         try {
             Thread.sleep(100);
@@ -59,7 +59,9 @@ public class EGuitarSound {
             soundPool.stop(streamId[i]);
         }
     }
-
+    public static void setVolume(byte volume) {
+        EGuitarSound.volume = volume / 100.0f;
+    }
     public void release() {
         soundPool.release();
         soundPool = null;
