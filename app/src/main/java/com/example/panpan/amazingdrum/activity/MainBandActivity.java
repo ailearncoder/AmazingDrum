@@ -33,30 +33,30 @@ public class MainBandActivity extends PermissionReqiureActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_band);
         ButterKnife.inject(this);
-        setButtonVisible(false);
+        setButtonVisible(true);
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.button1:
-                setButtonVisible(true);
                 instrumentType = 0;
+                startActivity(new Intent(this, JoinActivity2.class));
                 break;
             case R.id.button2:
-                setButtonVisible(true);
                 instrumentType = 1;
+                startActivity(new Intent(this, JoinActivity2.class));
                 break;
             case R.id.button3:
-                setButtonVisible(true);
                 instrumentType = 2;
+                startActivity(new Intent(this, JoinActivity2.class));
                 break;
             case R.id.button4:
-                setButtonVisible(true);
                 instrumentType = 3;
+                startActivity(new Intent(this, JoinActivity2.class));
                 break;
             case R.id.button5:
-                startActivity(new Intent(this, JoinActivity2.class));
+                setButtonVisible(false);
                 break;
             case R.id.button6:
                 startActivity(new Intent(this, RoomActivity2.class));
@@ -85,10 +85,10 @@ public class MainBandActivity extends PermissionReqiureActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (button1.getVisibility() == View.VISIBLE)
+            if (button1.getVisibility() != View.VISIBLE)
                 return super.onKeyDown(keyCode, event);
             else {
-                setButtonVisible(false);
+                setButtonVisible(true);
                 return true;
             }
         }

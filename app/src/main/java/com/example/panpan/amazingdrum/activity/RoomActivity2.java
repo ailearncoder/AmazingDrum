@@ -335,8 +335,10 @@ public class RoomActivity2 extends Activity {
                             eChordIndex = eChordIndex2;
                         }
                         if (eChordIndex == 7) {
-                            if (!mediaPlayer.isPlaying())
-                                mediaPlayer.start();
+                            if (!mediaPlayer.isPlaying()) {
+                                if (mediaPlayer.getCurrentPosition() < mediaPlayer.getDuration())
+                                    mediaPlayer.start();
+                            }
                             handler.removeCallbacks(mediaRunnable);
                             handler.postDelayed(mediaRunnable, 2000);
                             return;
@@ -464,14 +466,14 @@ public class RoomActivity2 extends Activity {
         @Override
         public void run() {
             adapter.clear();
-            if (MainBandActivity.instrumentType == 0)
-                adapter.add("房主——吉他");
-            if (MainBandActivity.instrumentType == 1)
-                adapter.add("房主——架子鼓");
-            if (MainBandActivity.instrumentType == 2)
-                adapter.add("房主——电吉他");
-            if (MainBandActivity.instrumentType == 3)
-                adapter.add("房主——贝斯");
+//            if (MainBandActivity.instrumentType == 0)
+//                adapter.add("房主——吉他");
+//            if (MainBandActivity.instrumentType == 1)
+//                adapter.add("房主——架子鼓");
+//            if (MainBandActivity.instrumentType == 2)
+//                adapter.add("房主——电吉他");
+//            if (MainBandActivity.instrumentType == 3)
+//                adapter.add("房主——贝斯");
             for (int i = 0; i < servers.size(); i++) {
                 adapter.add(servers.get(i).getTag());
             }
@@ -523,7 +525,6 @@ public class RoomActivity2 extends Activity {
                         String name = "鼓手";
                         //macName.put(device.getAddress(), name);
                     }
-                    runOnUiThread(listRunnable);
                     break;
                 case 0x03:
                     if (value[1] == 0x00)//连接吉他
@@ -560,9 +561,16 @@ public class RoomActivity2 extends Activity {
                         bassDevice = server;
                     } else if (value[1] == 0x03)//电吉他
                     {
+                        eGuitarSound.silence();
                         eRhythmIndex = 0;
                         eChordIndex2 = value[2];
                         eGuitarDevice = server;
+                        if (eChordIndex2 == 7) {
+                            if (mediaPlayer.isPlaying()) {
+                                mediaPlayer.pause();
+                            }
+                            mediaPlayer.seekTo(0);
+                        }
                     }
                     break;
             }

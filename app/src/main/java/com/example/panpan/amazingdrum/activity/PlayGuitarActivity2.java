@@ -148,7 +148,7 @@ public class PlayGuitarActivity2 extends Activity {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("提示");
-            progressDialog.setCancelable(false);
+            //progressDialog.setCancelable(false);
         }
         progressDialog.setMessage(msg);
         if (!progressDialog.isShowing())
