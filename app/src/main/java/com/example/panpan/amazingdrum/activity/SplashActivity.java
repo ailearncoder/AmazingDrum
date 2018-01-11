@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.animation.AnimationUtils;
 
 import com.example.panpan.amazingdrum.R;
+import com.example.panpan.amazingdrum.activity.band.WFActivity;
 
 public class SplashActivity extends Activity {
 
@@ -37,7 +38,7 @@ public class SplashActivity extends Activity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            startActivity(new Intent(SplashActivity.this, MainBandActivity.class));
+                            startActivity(new Intent(SplashActivity.this, WFActivity.class));
                             finish();
                         }
                     }, 1000);
@@ -48,13 +49,13 @@ public class SplashActivity extends Activity {
 
     @Override
     protected void onPause() {
-        handler.removeCallbacks(uiRunnable);
         super.onPause();
+        handler.removeCallbacks(uiRunnable);
     }
 
     @Override
     protected void onResume() {
-        handler.postDelayed(uiRunnable, 200);
         super.onResume();
+        handler.postDelayed(uiRunnable, 200);
     }
 }

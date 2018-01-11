@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/band_button_back"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.example.panpan.amazingdrum.activity.band.WFGuitar1Activity" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/band_button"
+            android:background="@drawable/band_button2"
+            android:text="rff1" />
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/band_button"
+            android:text="rff2" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/band_button"
+            android:text="riff3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button4"
+            style="@style/band_button"
+            android:text="#F" />
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/band_button"
+            android:text="D" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/band_button"
+            android:text="E" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button7"
+            style="@style/band_button"
+            android:text="A" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/band_button"
+            android:text="#G" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/band_button"
+            android:text="F" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/volume"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/volume_open"
+        android:onClick="setVolume" />
+
+</LinearLayout>

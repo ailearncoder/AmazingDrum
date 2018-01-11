@@ -48,6 +48,9 @@ public class PermissionReqiureActivity extends Activity {
                 || ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
                 ) {
 
             // Should we show an explanation?
@@ -66,7 +69,8 @@ public class PermissionReqiureActivity extends Activity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION},
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.CAMERA},
                         0x88);
 
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an

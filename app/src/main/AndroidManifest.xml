@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.panpan.amazingdrum">
+    package="com.example.panpan.amazingdrum">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -25,33 +28,38 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainBandActivity"/>
-        <activity android:name=".activity.RoomActivity"/>
-        <activity android:name=".activity.RoomActivity2"/>
-        <activity android:name=".activity.RoomActivityBle"/>
-        <activity android:name=".activity.RoomActivityBle2"/>
-        <activity android:name=".activity.JoinActivity"/>
-        <activity android:name=".activity.JoinActivity2"/>
-        <activity android:name=".activity.JoinActivityBle"/>
-        <activity android:name=".activity.PlayActivity"/>
-        <activity android:name=".activity.PlayDrumActivity"/>
-        <activity android:name=".activity.PlayDrumActivity2"/>
-        <activity android:name=".activity.PlayDrumActivityBle"/>
-        <activity android:name=".activity.PlayDrumActivityBle2"/>
-        <activity android:name=".activity.PlayGuitarActivity2"/>
-        <activity android:name=".activity.PlayGuitarActivityBle"/>
-        <activity android:name=".activity.PlayGuitarActivityBle2"/>
-        <activity android:name=".activity.PlayBassActivity2"/>
-        <activity android:name=".activity.PlayEGuitarActivity2"/>
+        <activity android:name=".activity.MainBandActivity" />
+        <activity android:name=".activity.RoomActivity" />
+        <activity android:name=".activity.RoomActivity2" />
+        <activity android:name=".activity.RoomActivityBle" />
+        <activity android:name=".activity.RoomActivityBle2" />
+        <activity android:name=".activity.JoinActivity" />
+        <activity android:name=".activity.JoinActivity2" />
+        <activity android:name=".activity.JoinActivityBle" />
+        <activity android:name=".activity.PlayActivity" />
+        <activity android:name=".activity.PlayDrumActivity" />
+        <activity android:name=".activity.PlayDrumActivity2" />
+        <activity android:name=".activity.PlayDrumActivityBle" />
+        <activity android:name=".activity.PlayDrumActivityBle2" />
+        <activity android:name=".activity.PlayGuitarActivity2" />
+        <activity android:name=".activity.PlayGuitarActivityBle" />
+        <activity android:name=".activity.PlayGuitarActivityBle2" />
+        <activity android:name=".activity.PlayBassActivity2" />
+        <activity android:name=".activity.PlayEGuitarActivity2" />
+        <activity android:name=".activity.band.WFActivity" />
+        <activity android:name=".activity.band.WFBassActivity" />
+        <activity android:name=".activity.band.WFDrumActivity" />
+        <activity android:name=".activity.band.WFGuitar1Activity" />
+        <activity android:name=".activity.band.WFGuitar2Activity" />
         <activity
             android:name=".activity.DeviceSelectActivity"
             android:label="选择拨片"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"/>
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
     </application>
 
 </manifest>

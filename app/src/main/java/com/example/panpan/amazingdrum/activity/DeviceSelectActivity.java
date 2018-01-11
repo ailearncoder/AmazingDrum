@@ -36,7 +36,7 @@ public class DeviceSelectActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_select);
         ButterKnife.inject(this);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        adapter = new ArrayAdapter<>(DeviceSelectActivity.this, android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
